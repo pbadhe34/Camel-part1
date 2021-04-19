@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configures the Camel Context-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+  <camelContext xmlns="http://camel.apache.org/schema/spring">   
+  
+     <propertyPlaceholder id="properties" location="com/app/test.properties"/>  
+    <route>
+       <from uri="file:src/data?noop=true"/>
+        <choice>
+        <when>
+            <groovy>camelContext.resolvePropertyPlaceholders("{{file.active}}")</groovy>
+            <to uri="stream:out"/>
+        </when>
+        <otherwise>
+            <to uri="file:target/data"/>
+        </otherwise> 
+     </choice> 
+    </route>
+    
+    <!-- <route>
+        <from uri="timer:test"/>       
+         
+        <setHeader headerName ='tomorrow'>       
+           <groovy>
+           now = System.currentTimeMillis()
+           now += 1000*60*60*24
+           new Date(now).toString()
+           </groovy>
+        </setHeader>
+        <to uri="log:test?showHeaders=true"/>
+    </route> -->
+    
+  </camelContext>
+
+</beans>

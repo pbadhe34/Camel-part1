@@ -1,0 +1,9 @@
+2021-04-16 17:41:29,810 | INFO | AbstractCamelContext.java 2998 | Routes startup summary (total:1 started:1)
+2021-04-16 17:41:29,814 | INFO | AbstractCamelContext.java 3003 |     Started test (stream://in)
+2021-04-16 17:41:29,814 | INFO | AbstractCamelContext.java 3015 | Apache Camel 3.9.0 (camel) started in 487ms (build:78ms init:363ms start:46ms)
+2021-04-16 17:41:33,655 | INFO | CamelLogger.java 166 | Got the message from Input as hhjm 
+2021-04-16 17:41:35,708 | INFO | CamelLogger.java 166 | Got the message from Input as dddd
+2021-04-16 17:41:35,842 | INFO | AbstractCamelContext.java 3201 | Apache Camel 3.9.0 (camel) shutting down (timeout:45s)
+2021-04-16 17:41:35,865 | INFO | AbstractCamelContext.java 3396 | Routes shutdown summary (total:1 stopped:1)
+2021-04-16 17:41:35,865 | INFO | AbstractCamelContext.java 3401 |     Stopped test (stream://in)
+2021-04-16 17:41:35,871 | INFO | AbstractCamelContext.java 3341 | Apache Camel 3.9.0 (camel) shutdown in 29ms (uptime:6s103ms)

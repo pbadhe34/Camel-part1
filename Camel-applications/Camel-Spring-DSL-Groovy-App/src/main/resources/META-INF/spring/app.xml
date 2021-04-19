@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configures the Camel Context-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+       
+       <!-- Run Camel context with java DSL -->
+       <!--  <camelContext xmlns="http://camel.apache.org/schema/spring">
+           <package>com.app</package>
+       </camelContext> -->
+
+<!--  This Main class only supports single CamelContext and Not multiple xml dsl files -->
+  <camelContext xmlns="http://camel.apache.org/schema/spring">
+     <!-- This route which processes the input files
+         (leaving them in place - see the 'noop' flag)
+         then performs content based routing on the message using XPath -->
+         
+         <!-- Add java dsl route builder if needed to run paralel-->
+          <routeBuilder ref="myRouteBuilder" />
+    <route>
+      <from uri="file:src/data?noop=true"/>
+      <choice>
+        <when>
+          <xpath>/person/city = 'London'</xpath>
+          <log message="UK message"/>
+          <to uri="file:target/messages/uk"/>
+        </when>
+        <otherwise>
+          <log message="Other message"/>
+          <to uri="file:target/messages/others"/>
+        </otherwise>
+      </choice>
+    </route>
+  </camelContext>
+<bean id="myRouteBuilder" class="com.app.MyRouteBuilder"/>
+
+</beans>

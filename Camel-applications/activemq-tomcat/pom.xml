@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.app</groupId>
+	<version>3.9</version>
+	<artifactId>camel-activemq-tomcat</artifactId>
+	<name>Camel :: ActiveMQ :: Tomcat</name>
+	<description>An app using ActiveMQ Broker and Camel with Apache Tomcat</description>
+	<packaging>war</packaging>
+
+	<properties>
+		<category>Messaging Within Web App</category>
+		<title>ActiveMQ Tomcat</title>
+		<camel.version>3.9.0</camel.version>
+		<log4j2-version>2.13.3</log4j2-version>
+		<spring-version>5.3.5</spring-version>
+		<activemq-version>5.16.1</activemq-version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- Add Camel BOM -->
+			<dependency>
+				<groupId>org.apache.camel</groupId>
+				<artifactId>camel-bom</artifactId>
+				<version>${camel.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>tomcat-maven-plugin</artifactId>
+				<configuration>
+					<server>myTomcat</server>
+					<url>${tomcat.url}</url>
+					<path>/${project.build.finalName}</path>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>org.apache.camel.example.cxf.CamelRouteClient</mainClass>
+					<includePluginDependencies>false</includePluginDependencies>
+					<systemProperties>
+						<property>
+							<key>java.util.logging.config.file</key>
+							<value>logging.properties</value>
+						</property>
+					</systemProperties>
+				</configuration>
+			</plugin>
+		</plugins>
+		<!-- Name of the generated WAR file -->
+		<finalName>camel-activemq-tomcat</finalName>
+	</build>
+
+	<dependencies>
+
+		<!-- camel -->
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-spring-xml</artifactId>
+		</dependency>
+
+		<!-- we use spring web to kick-start the application in web.xml -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+
+		<!-- camel jms and activemq -->
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-jms</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-activemq</artifactId>
+		</dependency>
+
+		<!-- embed ActiveMQ broker -->
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-broker</artifactId>
+			<version>${activemq-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-spring</artifactId>
+			<version>${activemq-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-kahadb-store</artifactId>
+			<version>${activemq-version}</version>
+		</dependency>
+
+		<!-- ActiveMQ client -->
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-client</artifactId>
+			<version>${activemq-version}</version>
+			<!-- lets use JMS 2.0 api but camel-jms still works with ActiveMQ 5.x 
+				that is JMS 1.1 only -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-jms_1.1_spec</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-pool</artifactId>
+			<version>${activemq-version}</version>
+			<!-- lets use JMS 2.0 api but camel-jms still works with ActiveMQ 5.x 
+				that is JMS 1.1 only -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-jms_1.1_spec</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- xbean is required for ActiveMQ broker configuration in the spring 
+			xml file -->
+		<dependency>
+			<groupId>org.apache.xbean</groupId>
+			<artifactId>xbean-spring</artifactId>
+			<version>4.14</version>
+		</dependency>
+
+		<!-- logging -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j2-version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j2-version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${log4j2-version}</version>
+			<scope>runtime</scope>
+		</dependency>
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>Tomcat8</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<tomcat.url>http://localhost:8080/manager/text</tomcat.url>
+			</properties>
+		</profile>
+
+	</profiles>
+
+</project>
